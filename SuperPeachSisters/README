@@ -1,0 +1,8 @@
+This is how to build SuperPeachSisters in a macOS Terminal window, assuming
+you've already installed XQuartz and freeGLUT:
+
+1. Download the Mac command line skeleton for SuperPeachSisters and unzip it.
+2. To build the program, change into the SuperPeachSisters directory and type
+	make
+3. To run the program, type
+	./SuperPeachSisters
