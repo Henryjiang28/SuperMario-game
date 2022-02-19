@@ -59,6 +59,7 @@ int StudentWorld::init()
                     case Level::peach:
                         cout << "Location " << x << " " << y << " is where Peach starts" << endl;
                         m_peach = new Peach(this, x, y);
+                        m_actors.push_back(m_peach);
                         break;
                     case Level::mario:
                         cout << "Location " << x << " " << y << " is where Peach starts" << endl;
@@ -112,7 +113,6 @@ void StudentWorld::createMushroom(double x, double y){
 
  int StudentWorld::move()
 {
-     m_peach ->doSomething();
     for(auto it = m_actors.begin(); it != m_actors.end(); it++){          // auto autoConverts type
         if((*it)->isAlive() == true){
             (*it)->doSomething();
@@ -233,6 +233,18 @@ bool StudentWorld::noBlockingObjectAt(double x, double y){
                     return true;
         }
     }
+	return false;
+}
+
+
+bool StudentWorld::overlapPeach(Actor* me) {
+	for (Actor* a : m_actors)
+		if (a!= me && a->isAlive() && a->isPeach() && overlap(a, me)){
+            if (a->isAlive() && overlap(a, me)){
+                return true;
+            }
+
+        }
 	return false;
 }
 

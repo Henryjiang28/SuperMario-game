@@ -19,6 +19,8 @@ public:
      virtual bool canBeDamaged(){return false;}
       virtual void bonk(){return;}
       virtual bool hasGoodie(){return false;}
+      virtual bool isPeach(){return false;}
+      virtual void setDie() { alive = false; };
 
 private:
     StudentWorld* m_world;
@@ -44,6 +46,7 @@ class Peach : public Actor{
     bool isTempInvincible(){return m_tempInvincible;}
     bool isInRecharge(){return m_rechargeMode;}
     bool canShoot(){return m_canShoot;}
+    bool isPeach(){return true;}
 
 
     private:
@@ -128,7 +131,7 @@ class Flag : public interactItems{
         Flag(StudentWorld* world_ptr, double lx, double ly)
         :interactItems(world_ptr, IID_FLAG, lx, ly, 0, 1){}
 
-        virtual void doSomething(){return;}  // TO DO!!!
+        virtual void doSomething();  // TO DO!!!
         virtual void bonk(){return;}
         virtual bool canBeDamaged(){return false;}
 

@@ -26,6 +26,8 @@ public:
   void createFlower(double lx, double ly);
   void createStar(double lx, double ly);
   void createMushroom(double lx, double ly);
+  void setCurLevelFinished(){m_finishCurLevel = true;}
+  bool overlapPeach(Actor* me);
 
 private:
   Peach* m_peach;

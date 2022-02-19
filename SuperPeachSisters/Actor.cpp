@@ -129,6 +129,19 @@ void Block::releaseGoodie(){
 }
 
 
+// Flag Start
+void Flag::doSomething(){
+    if(!isAlive()){
+        return;
+    }
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->increaseScore(1000);
+        setDie();
+        getWorld()->setCurLevelFinished();
+    }
+}
+
+
 
 
 
