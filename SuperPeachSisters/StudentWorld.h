@@ -18,11 +18,21 @@ public:
   virtual int move();
   virtual void cleanUp();
   ~StudentWorld();
-  bool overlap(int x, int y);
+  bool blockingObjectAt(double x, double y);
+  void bonkObjectAt(double x, double y);
+  bool overlap(Actor* a, Actor* b);
+  bool noBlockingObjectAt(double x, double y);
+
+  void createFlower(double lx, double ly);
+  void createStar(double lx, double ly);
+  void createMushroom(double lx, double ly);
 
 private:
   Peach* m_peach;
   std::vector<Actor*> m_actors;
+
+  bool m_finishCurLevel;
+  bool m_savedMario;
 
 };
 
