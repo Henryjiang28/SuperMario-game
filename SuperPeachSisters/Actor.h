@@ -35,7 +35,7 @@ class Peach : public Actor{
     public:
         Peach(StudentWorld* world_ptr, double lx, double ly): // ptr to the student world is needed to access functions
             Actor(world_ptr, IID_PEACH, lx, ly, 0, 0),
-            m_hitPoints(1), m_shootPower(true),m_jumpPower(false),m_starPower(false),remaining_jump_distance(0),starPowerTime(0)
+            m_hitPoints(1), m_shootPower(true),m_jumpPower(true),m_starPower(true),remaining_jump_distance(0),starPowerTime(0)
             ,m_tempInvincible(false),tempInvincibleTime(0){}
             // change shoot power to false!!!! , teseting only
 
@@ -49,7 +49,7 @@ class Peach : public Actor{
     bool isTempInvincible(){return m_tempInvincible;}
     // bool isInRecharge(){return time_to_recharge_before_next_fire > 0;}
     bool canShoot(){return m_canShoot;}
-    bool isPeach(){return true;}
+    virtual bool isPeach(){return true;}
     virtual bool canBeDamaged(){return true;}
 
 
@@ -227,7 +227,6 @@ class Peach_Fireball : public interactItems{
         :interactItems(world_ptr, IID_PEACH_FIRE, lx, ly, dir, 1){}
 
     virtual void doSomething();
-    virtual bool canBeDamaged(){return false;}
     virtual void bonk(){return;}
 };
 
@@ -237,8 +236,10 @@ class Shell : public interactItems{
     public:
         Shell(StudentWorld* world_ptr, double lx, double ly, int dir)
         :interactItems(world_ptr, IID_SHELL, lx, ly, dir, 1){}
-};
+    virtual void doSomething();
+    virtual void bonk(){return;}
 
+};
 
 
 // _--------  enemy class
@@ -250,8 +251,9 @@ class Enemy : public Actor{
 
     virtual bool canBeDamged(){return true;}
     virtual bool blockMovement(){return false;}
-    virtual void getDamaged();
+    virtual void getDamaged();  // all the same getDamaged behaviors
     virtual bool isEnemy(){return true;}
+    virtual void doSomething();  // will be shared between goomba and koopa
 };
 
 class Goomba : public Enemy{
@@ -259,21 +261,20 @@ class Goomba : public Enemy{
         Goomba(StudentWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_GOOMBA, lx, ly, dir){}
     virtual void bonk();
-    virtual void doSomething();
-    
-
 };
 
 class Koopa : public Enemy{
     public:
         Koopa(StudentWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_KOOPA, lx, ly, dir){}
+    virtual void bonk();
 };
 
 class Piranha : public Enemy{
     public:
         Piranha(StudentWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_PIRANHA, lx, ly, dir){}
+    virtual void doSomething(){return;}  // TOD, Piranha will have its own doSomehing.
 
 };
 

@@ -51,6 +51,7 @@ int StudentWorld::init()
                     break;
                 case Level::koopa:
                     cout << "Location " << x << " " << y << " starts with a koopa" << endl;
+                    m_actors.push_back( new Koopa(this, x, y, 180*randInt(0,1)));
                     break;
                 case Level::goomba:
                     cout << "Location " << x << " " << y << " starts with a goomba" << endl;
@@ -118,6 +119,9 @@ void StudentWorld::createMushroom(double x, double y)
 void StudentWorld::createPeachFireBall(double x, double y, int dir)
 {
     m_actors.push_back(new Peach_Fireball(this, x / SPRITE_WIDTH, y / SPRITE_HEIGHT, dir));
+}
+void StudentWorld::createShell(double x, double y, int dir){
+    m_actors.push_back(new Shell(this, x / SPRITE_WIDTH, y / SPRITE_HEIGHT, dir));
 }
 
 int StudentWorld::move()
@@ -278,7 +282,7 @@ bool StudentWorld::overlapPeach(Actor *me)
 
 bool StudentWorld::damageOverlapEnemy(Actor* me){
      for (Actor *a : m_actors){
-        if(overlap(me, a) && a->isEnemy()){
+        if(overlap(me, a) && a->isEnemy() && !a->isPeach()){
             a->getDamaged();
             return true;
         }
@@ -289,7 +293,7 @@ bool StudentWorld::damageOverlapEnemy(Actor* me){
 bool StudentWorld::overlapDamageableItems(Actor *me)
 {
     for (Actor* a : m_actors){
-        if (a != me && a->isAlive() && !a->isPeach() && a->canBeDamaged() && overlap(me, a))
+        if (a != me && a->isAlive() && !a->isPeach() && a->isEnemy() && overlap(me, a))
         {
             return true;
         }

@@ -160,6 +160,40 @@ void Peach_Fireball::doSomething(){
 
 }
 
+void Shell::doSomething(){
+    if(getWorld()->overlapDamageableItems(this)){
+        getWorld()->damageItemAt(getX(),getY());
+        setDie();
+        return;
+    }
+
+    if(!getWorld()->blockingObjectAt(getX(),getY()-2)){
+        moveTo(getX(),getY()-2);
+    }
+
+    if(getDirection() == 0){
+        if(getWorld()->blockingObjectAt(getX()+2, getY())){
+            setDie();
+            return;
+        }else{
+            moveTo(getX()+2, getY());
+        }
+    }
+
+    if(getDirection() == 180){
+        if(getWorld()->blockingObjectAt(getX()-2, getY())){
+            setDie();
+            return;
+        }else{
+            moveTo(getX()-2, getY());
+        }
+    }
+
+} // end of do something
+
+
+
+
 void Block::bonk(){
 
     if(!hasGoodie()){
@@ -222,7 +256,7 @@ void Enemy::getDamaged(){
 }
 
 // goomba start
-void Goomba::doSomething(){
+void Enemy::doSomething(){
     if(!isAlive()){
         return;
     }
@@ -275,6 +309,25 @@ void Goomba::bonk(){
         }
         return;
 }
+
+// koopa start
+void Koopa::bonk(){
+        if(getWorld()->overlapPeach(this)){
+            if(getWorld()->getPeach()->hasStarPower()){
+                getWorld()->playSound(SOUND_PLAYER_KICK);
+                getWorld()->increaseScore(100);
+                setDie();
+                getWorld()->createShell(getX(),getY(),getDirection());
+            }
+        }
+        return;
+}
+
+
+
+
+
+
 
 
 

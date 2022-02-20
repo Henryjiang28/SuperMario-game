@@ -23,9 +23,10 @@ public:
   bool overlap(Actor* a, Actor* b);
   bool noBlockingObjectAt(double x, double y);
 
-  void createFlower(double lx, double ly);
-  void createStar(double lx, double ly);
-  void createMushroom(double lx, double ly);
+  void createFlower(double x, double y);
+  void createStar(double x, double y);
+  void createMushroom(double x, double y);
+  void createShell(double x, double y, int dir);
   void createPeachFireBall(double x, double y, int dir);
   void setCurLevelFinished(){m_finishCurLevel = true;}
   void setSavedMario(){m_savedMario = true;}
