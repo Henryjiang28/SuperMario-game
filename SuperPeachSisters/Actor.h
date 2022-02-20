@@ -20,7 +20,8 @@ public:
       virtual void bonk(){return;}
       virtual bool hasGoodie(){return false;}
       virtual bool isPeach(){return false;}
-      virtual void setDie() { alive = false; };
+      virtual void setDie() { alive = false;}
+      virtual void getDamaged(){};
 
 private:
     StudentWorld* m_world;
@@ -33,8 +34,9 @@ class Peach : public Actor{
     public:
         Peach(StudentWorld* world_ptr, double lx, double ly): // ptr to the student world is needed to access functions
             Actor(world_ptr, IID_PEACH, lx, ly, 0, 0),
-            m_hitPoints(1), m_shootPower(false),m_jumpPower(false),m_starPower(false),remaining_jump_distance(0),starPowerTime(0)
+            m_hitPoints(1), m_shootPower(true),m_jumpPower(false),m_starPower(false),remaining_jump_distance(0),starPowerTime(0)
             ,m_tempInvincible(false),tempInvincibleTime(0){}
+            // change shoot power to false!!!! , teseting only
 
 
     virtual void doSomething();
@@ -44,14 +46,15 @@ class Peach : public Actor{
     bool hasJumpPower(){return m_jumpPower;}
     bool hasShootPower(){return m_shootPower;}
     bool isTempInvincible(){return m_tempInvincible;}
-    bool isInRecharge(){return m_rechargeMode;}
+    // bool isInRecharge(){return time_to_recharge_before_next_fire > 0;}
     bool canShoot(){return m_canShoot;}
     bool isPeach(){return true;}
+    virtual bool canBeDamaged(){return true;}
 
 
     private:
         int m_hitPoints;
-        bool m_shootPower, m_jumpPower,m_starPower, m_tempInvincible, m_rechargeMode, m_canShoot;
+        bool m_shootPower, m_jumpPower,m_starPower, m_tempInvincible, m_canShoot;
         int remaining_jump_distance;
         int starPowerTime;
         int tempInvincibleTime;
@@ -131,7 +134,7 @@ class Flag : public interactItems{
         Flag(StudentWorld* world_ptr, double lx, double ly)
         :interactItems(world_ptr, IID_FLAG, lx, ly, 0, 1){}
 
-        virtual void doSomething();  // TO DO!!!
+        virtual void doSomething();
         virtual void bonk(){return;}
         virtual bool canBeDamaged(){return false;}
 
@@ -145,7 +148,7 @@ class Mario : public interactItems{
         Mario(StudentWorld* world_ptr, double lx, double ly)
         :interactItems(world_ptr, IID_MARIO, lx, ly, 0, 1){}
 
-        virtual void doSomething(){return;}  // TO DO!!!
+        virtual void doSomething();
         virtual void bonk(){return;}
         virtual bool canBeDamaged(){return false;}
 
@@ -212,6 +215,7 @@ class Piranha_Fireball  : public interactItems{
     public:
         Piranha_Fireball(StudentWorld* world_ptr, double lx, double ly, int dir)
         :interactItems(world_ptr, IID_PIRANHA_FIRE, lx, ly, dir, 1){}
+    virtual void doSomething();
 };
 
 
@@ -220,6 +224,10 @@ class Peach_Fireball : public interactItems{
     public:
         Peach_Fireball(StudentWorld* world_ptr, double lx, double ly, int dir)
         :interactItems(world_ptr, IID_PEACH_FIRE, lx, ly, dir, 1){}
+
+    virtual void doSomething();
+    virtual bool canBeDamaged(){return false;}
+    virtual void bonk(){return;}
 };
 
 
@@ -232,29 +240,38 @@ class Shell : public interactItems{
 
 
 
+// _--------  enemy class
 
+class Enemy : public Actor{
+    public:
+        Enemy(StudentWorld* world_ptr, int imageId, double lx, double ly, int dir)
+        :Actor(world_ptr, imageId, lx, ly, dir, 0){}
 
-// _--------
+    virtual bool canBeDamged(){return true;}
+    virtual bool blockMovement(){return false;}
+    virtual void getDamaged();
+};
 
-class Goomba : public Actor{
+class Goomba : public Enemy{
     public:
         Goomba(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :Actor(world_ptr, IID_GOOMBA, lx, ly, dir, 0){}
-
+        :Enemy(world_ptr, IID_GOOMBA, lx, ly, dir){}
+    virtual void bonk();
+    virtual void doSomething();
+    
 
 };
 
-class Koopa : public Actor{
+class Koopa : public Enemy{
     public:
         Koopa(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :Actor(world_ptr, IID_KOOPA, lx, ly, dir, 0){}
-
+        :Enemy(world_ptr, IID_KOOPA, lx, ly, dir){}
 };
 
-class Piranha : public Actor{
+class Piranha : public Enemy{
     public:
         Piranha(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :Actor(world_ptr, IID_PIRANHA, lx, ly, dir, 0){}
+        :Enemy(world_ptr, IID_PIRANHA, lx, ly, dir){}
 
 };
 

@@ -1,5 +1,7 @@
 #include "Actor.h"
 #include "StudentWorld.h"
+#include "GameConstants.h"
+#include <iostream>
 
 // Students:  Add code to this file, Actor.h, StudentWorld.h, and StudentWorld.cpp
 
@@ -22,14 +24,12 @@ void Peach::doSomething(){
         }
     }
 
-    if(isInRecharge()){
         if(time_to_recharge_before_next_fire > 0){
             time_to_recharge_before_next_fire--;
         }
-        if(time_to_recharge_before_next_fire == 0){
+        if(time_to_recharge_before_next_fire <= 0){
             m_canShoot = true;
         }
-    }
 
     if(getWorld()->noBlockingObjectAt(getX(),getY())){
         getWorld()->bonkObjectAt(getX(),getY());
@@ -88,6 +88,19 @@ void Peach::doSomething(){
                     }
                  }
             break;
+            case KEY_PRESS_SPACE:
+                if(hasShootPower()){
+                    if(time_to_recharge_before_next_fire <= 0){
+                        getWorld()->playSound(SOUND_PLAYER_FIRE);
+                        time_to_recharge_before_next_fire = 8;
+                        if(getDirection() == 0){
+                            getWorld()->createPeachFireBall(getX()+4, getY(), 0);
+                        }else if(getDirection() == 180){
+                            getWorld()->createPeachFireBall(getX()-4, getY(), 180);
+                        }
+                    }
+                }
+
 
             default:
                 break;
@@ -95,11 +108,58 @@ void Peach::doSomething(){
     }
     return;
 
-}
+}// end of peach dosomething
 
 void Peach::bonk(){
+    if(hasStarPower() || isTempInvincible()){
+        return;
+    }
+    m_hitPoints--;
+    tempInvincibleTime = 10;
+    if(hasShootPower()){
+        m_shootPower = false;
+    }
+    if(hasJumpPower()){
+        m_jumpPower = false;
+    }
+    if(m_hitPoints >= 1){
+        getWorld()->playSound(SOUND_PLAYER_HURT);
+    }
+    if(m_hitPoints <= 0){
+        setDie();
+    }
 
-} // todo
+} // TODO
+
+void Peach_Fireball::doSomething(){
+
+    if(getWorld()->overlapDamageableItems(this)){
+        getWorld()->damageItemAt(getX(), getY());
+        setDie();
+        return;
+    }else{
+        if(!getWorld()->blockingObjectAt(getX(),getY()-2)){
+            moveTo(getX(), getY()-2);
+        }
+    }
+
+    if(getDirection() == 0){
+        if(getWorld()->blockingObjectAt(getX()+2, getY())){
+            setDie();
+            return;
+        }else{
+            moveTo(getX()+2, getY());
+        }
+    }else if(getDirection() == 180){
+        if(getWorld()->blockingObjectAt(getX()-2, getY())){
+            setDie();
+            return;
+        }else{
+            moveTo(getX()-2, getY());
+        }
+    }
+
+}
 
 void Block::bonk(){
 
@@ -140,6 +200,87 @@ void Flag::doSomething(){
         getWorld()->setCurLevelFinished();
     }
 }
+
+// Mario start
+
+void Mario::doSomething(){
+    if(!isAlive()){
+        return;
+    }
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->increaseScore(1000);
+        setDie();
+        getWorld()->setSavedMario();
+    }
+}
+
+
+
+// enemy
+void Enemy::getDamaged(){
+    getWorld()->increaseScore(100);
+    setDie();
+}
+
+// goomba start
+void Goomba::doSomething(){
+    if(!isAlive()){
+        return;
+    }
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->bonkPeach(this);
+        return;
+    }
+
+// goomba will move without dropping
+    if(getDirection() == 0 && getWorld()->blockingObjectAt(getX()+1,getY())){
+            setDirection(180);
+    }
+    if(getDirection() == 180 && getWorld()->blockingObjectAt(getX()-1,getY())){
+            setDirection(0);
+    }
+
+    if(getDirection() == 0 && !getWorld()->blockingObjectAt(getX()+SPRITE_WIDTH,getY()-1) ){
+            setDirection(180);
+    }
+    if(getDirection() == 180 && !getWorld()->blockingObjectAt(getX()-SPRITE_WIDTH,getY()-1)){
+        setDirection(0);
+    }
+
+
+// step 5 in dosomthing
+    if(getDirection() == 0){
+        if (getWorld()->blockingObjectAt(getX()+1,getY()) ){
+           return;
+        }else{
+            moveTo(getX()+1, getY());
+        }
+    }else if(getDirection() == 180){
+        if (getWorld()->blockingObjectAt(getX()-1,getY()) ){
+           return;
+        }else{
+            moveTo(getX()-1, getY());
+        }
+
+    }
+
+}
+
+void Goomba::bonk(){
+        if(getWorld()->overlapPeach(this)){
+            if(getWorld()->getPeach()->hasStarPower()){
+                getWorld()->playSound(SOUND_PLAYER_KICK);
+                getWorld()->increaseScore(100);
+                setDie();
+            }
+        }
+        return;
+}
+
+
+
+
+
 
 
 

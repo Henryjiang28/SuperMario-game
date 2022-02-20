@@ -26,8 +26,15 @@ public:
   void createFlower(double lx, double ly);
   void createStar(double lx, double ly);
   void createMushroom(double lx, double ly);
+  void createPeachFireBall(double x, double y, int dir);
   void setCurLevelFinished(){m_finishCurLevel = true;}
+  void setSavedMario(){m_savedMario = true;}
   bool overlapPeach(Actor* me);
+  void bonkPeach(Actor* me);
+  bool overlapDamageableItems(Actor* me);  // not including peach
+  void damageItemAt(double x, double y);
+  Peach* getPeach(){return m_peach;}
+  bool damageOverlapItems(Actor* me);
 
 private:
   Peach* m_peach;
