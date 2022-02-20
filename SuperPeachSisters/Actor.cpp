@@ -133,8 +133,7 @@ void Peach::bonk(){
 
 void Peach_Fireball::doSomething(){
 
-    if(getWorld()->overlapDamageableItems(this)){
-        getWorld()->damageItemAt(getX(), getY());
+    if(getWorld()->damageOverlapEnemy(this)){
         setDie();
         return;
     }else{

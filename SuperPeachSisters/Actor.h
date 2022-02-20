@@ -22,6 +22,7 @@ public:
       virtual bool isPeach(){return false;}
       virtual void setDie() { alive = false;}
       virtual void getDamaged(){};
+      virtual bool isEnemy(){return false;}
 
 private:
     StudentWorld* m_world;
@@ -250,6 +251,7 @@ class Enemy : public Actor{
     virtual bool canBeDamged(){return true;}
     virtual bool blockMovement(){return false;}
     virtual void getDamaged();
+    virtual bool isEnemy(){return true;}
 };
 
 class Goomba : public Enemy{

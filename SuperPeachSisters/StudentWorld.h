@@ -34,7 +34,7 @@ public:
   bool overlapDamageableItems(Actor* me);  // not including peach
   void damageItemAt(double x, double y);
   Peach* getPeach(){return m_peach;}
-  bool damageOverlapItems(Actor* me);
+  bool damageOverlapEnemy(Actor* me);
 
 private:
   Peach* m_peach;

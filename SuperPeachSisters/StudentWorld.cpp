@@ -150,7 +150,7 @@ int StudentWorld::move()
         }
     }
 
-    for (auto it = m_actors.begin(); it != m_actors.end(); it++)
+    for (vector<Actor*>::iterator it = m_actors.begin(); it != m_actors.end(); it++)
     {
         if ((*it)->isAlive() == false)
         {
@@ -276,13 +276,11 @@ bool StudentWorld::overlapPeach(Actor *me)
     return false;
 }
 
-bool StudentWorld::damageOverlapItems(Actor* me){
+bool StudentWorld::damageOverlapEnemy(Actor* me){
      for (Actor *a : m_actors){
-        if (a != me && a->isAlive() && !a->isPeach()){
-            if(overlap(me, a) && a->canBeDamaged()){
-                a->getDamaged();
-                return true;
-            }
+        if(overlap(me, a) && a->isEnemy()){
+            a->getDamaged();
+            return true;
         }
     }
     return false;
@@ -291,7 +289,7 @@ bool StudentWorld::damageOverlapItems(Actor* me){
 bool StudentWorld::overlapDamageableItems(Actor *me)
 {
     for (Actor* a : m_actors){
-        if (a != me && a->isAlive() && !a->isPeach() && a->canBeDamaged() && overlap(a, me))
+        if (a != me && a->isAlive() && !a->isPeach() && a->canBeDamaged() && overlap(me, a))
         {
             return true;
         }
@@ -304,11 +302,11 @@ void StudentWorld::damageItemAt(double x, double y)
 {
     for (Actor* a : m_actors)
     {
-        if (x < (a->getX() + (SPRITE_WIDTH)) && x > (a->getX() - (SPRITE_WIDTH)) )
+        if (x - SPRITE_WIDTH < a->getX() && x + SPRITE_WIDTH > a->getX()  )
         {
-            if (y > (a->getY() - SPRITE_HEIGHT) && y < (a->getY() + SPRITE_HEIGHT) )
+            if (y + SPRITE_HEIGHT > a->getY() && y - SPRITE_HEIGHT < a->getY()  )
             {
-                a->getDamaged();
+                    a->getDamaged();
             }
         }
     }
