@@ -251,7 +251,7 @@ class Enemy : public Actor{
 
     virtual bool canBeDamged(){return true;}
     virtual bool blockMovement(){return false;}
-    virtual void getDamaged();  // all the same getDamaged behaviors
+    virtual void getDamaged(){return;} // all the same getDamaged behaviors
     virtual bool isEnemy(){return true;}
     virtual void doSomething();  // will be shared between goomba and koopa
 };
@@ -261,6 +261,7 @@ class Goomba : public Enemy{
         Goomba(StudentWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_GOOMBA, lx, ly, dir){}
     virtual void bonk();
+    virtual void getDamaged();
 };
 
 class Koopa : public Enemy{
@@ -268,6 +269,7 @@ class Koopa : public Enemy{
         Koopa(StudentWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_KOOPA, lx, ly, dir){}
     virtual void bonk();
+    virtual void getDamaged();
 };
 
 class Piranha : public Enemy{

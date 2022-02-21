@@ -282,7 +282,7 @@ bool StudentWorld::overlapPeach(Actor *me)
 
 bool StudentWorld::damageOverlapEnemy(Actor* me){
      for (Actor *a : m_actors){
-        if(overlap(me, a) && a->isEnemy() && !a->isPeach()){
+        if( a!= me && overlap(me, a) && a->isEnemy() && !a->isPeach() && a->isAlive()){
             a->getDamaged();
             return true;
         }

@@ -133,7 +133,7 @@ void Peach::bonk(){
 
 void Peach_Fireball::doSomething(){
 
-    if(getWorld()->damageOverlapEnemy(this)){
+    if(getWorld()->damageOverlapEnemy(this)){   // good now, don't change
         setDie();
         return;
     }else{
@@ -161,8 +161,7 @@ void Peach_Fireball::doSomething(){
 }
 
 void Shell::doSomething(){
-    if(getWorld()->overlapDamageableItems(this)){
-        getWorld()->damageItemAt(getX(),getY());
+    if(getWorld()->damageOverlapEnemy(this)){   // good now, don't change!
         setDie();
         return;
     }
@@ -249,11 +248,8 @@ void Mario::doSomething(){
 
 
 
-// enemy
-void Enemy::getDamaged(){
-    getWorld()->increaseScore(100);
-    setDie();
-}
+
+
 
 // goomba start
 void Enemy::doSomething(){
@@ -321,6 +317,17 @@ void Koopa::bonk(){
             }
         }
         return;
+}
+
+void Goomba::getDamaged(){
+    getWorld()->increaseScore(100);
+    setDie();
+}
+
+void Koopa::getDamaged(){
+    getWorld()->increaseScore(100);
+    setDie();
+    getWorld()->createShell(getX(),getY(),getDirection());
 }
 
 
