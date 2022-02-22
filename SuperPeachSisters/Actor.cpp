@@ -129,7 +129,38 @@ void Peach::bonk(){
         setDie();
     }
 
-} // TODO
+}
+
+
+
+void Piranha_Fireball::doSomething(){
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->bonkPeach(this);            // same behavior with getting damaged
+        setDie();
+        return;
+    }else{
+        if(!getWorld()->blockingObjectAt(getX(),getY()-2)){
+            moveTo(getX(), getY()-2);
+        }
+    }
+
+    if(getDirection() == 0){
+        if(getWorld()->blockingObjectAt(getX()+2, getY())){
+            setDie();
+            return;
+        }else{
+            moveTo(getX()+2, getY());
+        }
+    }else if(getDirection() == 180){
+        if(getWorld()->blockingObjectAt(getX()-2, getY())){
+            setDie();
+            return;
+        }else{
+            moveTo(getX()-2, getY());
+        }
+    }
+}
+
 
 void Peach_Fireball::doSomething(){
 
@@ -295,8 +326,37 @@ void Enemy::doSomething(){
 
 }
 
-void Goomba::bonk(){
-        if(getWorld()->overlapPeach(this)){
+void Piranha::doSomething(){
+    if(!isAlive()){
+        return;
+    }
+    increaseAnimationNumber();
+
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->bonkPeach(this);
+    }
+
+    if(!getWorld()->isSameLevelWithPeach(this)){
+        return;
+    }
+    if(getWorld()->isSameLevelWithPeach(this)){
+        setDirection(getWorld()->getDirToPeach(this));
+    }
+    if(m_fireDelay > 0){
+        m_fireDelay--;
+        return;
+    }else{
+        if(getWorld()->withinAttackingDis(this)){
+            getWorld()->createPiranhaFireBall(getX(), getY(), getDirection());
+            getWorld()->playSound(SOUND_PIRANHA_FIRE);
+            m_fireDelay = 40;
+        }
+    }
+
+}
+ // may be moved to enemy bonk virtual function !! todo later
+void Enemy::bonk(){
+    if(getWorld()->overlapPeach(this)){
             if(getWorld()->getPeach()->hasStarPower()){
                 getWorld()->playSound(SOUND_PLAYER_KICK);
                 getWorld()->increaseScore(100);
@@ -306,7 +366,19 @@ void Goomba::bonk(){
         return;
 }
 
-// koopa start
+ // may be moved to enemy bonk virtual function !! todo later
+// void Goomba::bonk(){
+//         if(getWorld()->overlapPeach(this)){
+//             if(getWorld()->getPeach()->hasStarPower()){
+//                 getWorld()->playSound(SOUND_PLAYER_KICK);
+//                 getWorld()->increaseScore(100);
+//                 setDie();
+//             }
+//         }
+//         return;
+// }
+
+// koopa start // different bonk with enemy
 void Koopa::bonk(){
         if(getWorld()->overlapPeach(this)){
             if(getWorld()->getPeach()->hasStarPower()){
@@ -319,16 +391,23 @@ void Koopa::bonk(){
         return;
 }
 
-void Goomba::getDamaged(){
+void Enemy::getDamaged(){
     getWorld()->increaseScore(100);
     setDie();
 }
+
+// void Piranha::getDamaged(){
+//     getWorld()->increaseScore(100);
+//     setDie();
+// }
+
 
 void Koopa::getDamaged(){
     getWorld()->increaseScore(100);
     setDie();
     getWorld()->createShell(getX(),getY(),getDirection());
 }
+
 
 
 

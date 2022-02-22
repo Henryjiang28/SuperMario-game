@@ -28,6 +28,7 @@ public:
   void createMushroom(double x, double y);
   void createShell(double x, double y, int dir);
   void createPeachFireBall(double x, double y, int dir);
+  void createPiranhaFireBall(double x, double y, int dir);
   void setCurLevelFinished(){m_finishCurLevel = true;}
   void setSavedMario(){m_savedMario = true;}
   bool overlapPeach(Actor* me);
@@ -36,6 +37,10 @@ public:
   void damageItemAt(double x, double y);
   Peach* getPeach(){return m_peach;}
   bool damageOverlapEnemy(Actor* me);
+  bool isSameLevelWithPeach(Actor* me);
+  int getDirToPeach(Actor* me);
+  bool withinAttackingDis(Actor* me);
+
 
 private:
   Peach* m_peach;

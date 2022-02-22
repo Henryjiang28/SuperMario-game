@@ -35,19 +35,19 @@ class Peach : public Actor{
     public:
         Peach(StudentWorld* world_ptr, double lx, double ly): // ptr to the student world is needed to access functions
             Actor(world_ptr, IID_PEACH, lx, ly, 0, 0),
-            m_hitPoints(1), m_shootPower(true),m_jumpPower(true),m_starPower(true),remaining_jump_distance(0),starPowerTime(0)
+            m_hitPoints(1), m_shootPower(true),m_jumpPower(true),m_starPower(false),remaining_jump_distance(0),starPowerTime(0)
             ,m_tempInvincible(false),tempInvincibleTime(0){}
             // change shoot power to false!!!! , teseting only
 
 
     virtual void doSomething();
+    virtual void getDamaged(){ bonk(); }   // same with getting bonked.
     virtual bool blockMovement(){return false;}
     virtual void bonk();
     bool hasStarPower(){return m_starPower;}
     bool hasJumpPower(){return m_jumpPower;}
     bool hasShootPower(){return m_shootPower;}
     bool isTempInvincible(){return m_tempInvincible;}
-    // bool isInRecharge(){return time_to_recharge_before_next_fire > 0;}
     bool canShoot(){return m_canShoot;}
     virtual bool isPeach(){return true;}
     virtual bool canBeDamaged(){return true;}
@@ -125,6 +125,7 @@ class interactItems : public Actor{
 		Actor(world_ptr, imageID, lx, ly, dir, depth){};
 
     virtual bool blockMovement(){return false;}
+    virtual bool canBeDamaged(){return false;}
 
 };
 
@@ -137,7 +138,6 @@ class Flag : public interactItems{
 
         virtual void doSomething();
         virtual void bonk(){return;}
-        virtual bool canBeDamaged(){return false;}
 
     private:
 
@@ -151,7 +151,6 @@ class Mario : public interactItems{
 
         virtual void doSomething();
         virtual void bonk(){return;}
-        virtual bool canBeDamaged(){return false;}
 
     private:
 
@@ -190,7 +189,6 @@ class Mushroom : public Goodie{
 
         virtual void doSomething(){return;}  // TO DO!!!
         virtual void bonk(){return;}
-        virtual bool canBeDamaged(){return false;}
 
     private:
 
@@ -203,7 +201,6 @@ class Star : public Goodie{
 
         virtual void doSomething(){return;}  // TO DO!!!
         virtual void bonk(){return;}
-        virtual bool canBeDamaged(){return false;}
 
     private:
 
@@ -212,11 +209,23 @@ class Star : public Goodie{
 
 
 // dynamicItems extends interactItems maybe??
+class dynamicItems : public interactItems{
+    public:
+        dynamicItems(StudentWorld* world_ptr, int imageID, double lx, double ly, int dir)
+        :interactItems(world_ptr, imageID, lx, ly, dir, 1){}
+
+    virtual void doSomething(){return;}
+    virtual void bonk(){return;}
+
+};
+
+
 class Piranha_Fireball  : public interactItems{
     public:
         Piranha_Fireball(StudentWorld* world_ptr, double lx, double ly, int dir)
         :interactItems(world_ptr, IID_PIRANHA_FIRE, lx, ly, dir, 1){}
     virtual void doSomething();
+
 };
 
 
@@ -227,7 +236,7 @@ class Peach_Fireball : public interactItems{
         :interactItems(world_ptr, IID_PEACH_FIRE, lx, ly, dir, 1){}
 
     virtual void doSomething();
-    virtual void bonk(){return;}
+
 };
 
 
@@ -237,7 +246,7 @@ class Shell : public interactItems{
         Shell(StudentWorld* world_ptr, double lx, double ly, int dir)
         :interactItems(world_ptr, IID_SHELL, lx, ly, dir, 1){}
     virtual void doSomething();
-    virtual void bonk(){return;}
+
 
 };
 
@@ -249,34 +258,38 @@ class Enemy : public Actor{
         Enemy(StudentWorld* world_ptr, int imageId, double lx, double ly, int dir)
         :Actor(world_ptr, imageId, lx, ly, dir, 0){}
 
-    virtual bool canBeDamged(){return true;}
+    virtual bool canBeDamaged(){return true;}
     virtual bool blockMovement(){return false;}
-    virtual void getDamaged(){return;} // all the same getDamaged behaviors
+    virtual void getDamaged();      // shared betweem goomba and piranha
     virtual bool isEnemy(){return true;}
     virtual void doSomething();  // will be shared between goomba and koopa
+    virtual void bonk();        // shared between goomba and Piranha
 };
 
 class Goomba : public Enemy{
     public:
         Goomba(StudentWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_GOOMBA, lx, ly, dir){}
-    virtual void bonk();
-    virtual void getDamaged();
 };
 
 class Koopa : public Enemy{
     public:
         Koopa(StudentWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_KOOPA, lx, ly, dir){}
-    virtual void bonk();
-    virtual void getDamaged();
+    virtual void bonk();   // override enemy bonk               // creates shell
+    virtual void getDamaged(); // override enemy getDamaged()   // creates shell
 };
 
 class Piranha : public Enemy{
     public:
         Piranha(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :Enemy(world_ptr, IID_PIRANHA, lx, ly, dir){}
-    virtual void doSomething(){return;}  // TOD, Piranha will have its own doSomehing.
+        :Enemy(world_ptr, IID_PIRANHA, lx, ly, dir), m_fireDelay(0){}
+    virtual void doSomething();  // shoots fireball
+    // virtual void bonk();
+    // virtual void getDamaged();  // maybe combined with goomba
+
+    private:
+        int m_fireDelay;
 
 };
 

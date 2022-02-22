@@ -59,6 +59,7 @@ int StudentWorld::init()
                     break;
                 case Level::piranha:
                     cout << "Location " << x << " " << y << " starts with a goomba" << endl;
+                    m_actors.push_back(new Piranha(this, x, y, 180*randInt(0,1)));
                     break;
                 case Level::peach:
                     cout << "Location " << x << " " << y << " is where Peach starts" << endl;
@@ -122,6 +123,10 @@ void StudentWorld::createPeachFireBall(double x, double y, int dir)
 }
 void StudentWorld::createShell(double x, double y, int dir){
     m_actors.push_back(new Shell(this, x / SPRITE_WIDTH, y / SPRITE_HEIGHT, dir));
+}
+
+void StudentWorld::createPiranhaFireBall(double x, double y, int dir){
+    m_actors.push_back(new Piranha_Fireball(this, x / SPRITE_WIDTH, y / SPRITE_HEIGHT, dir));
 }
 
 int StudentWorld::move()
@@ -226,7 +231,7 @@ bool StudentWorld::blockingObjectAt(double x, double y)
     }
     return false;
 }
-
+ // may served as private function? Actor class not calling it directly.
 bool StudentWorld::overlap(Actor *a, Actor *b)
 {
     if ((a->getX() + SPRITE_WIDTH > b->getX() && a->getX() - SPRITE_WIDTH < b->getX()))
@@ -289,11 +294,12 @@ bool StudentWorld::damageOverlapEnemy(Actor* me){
     }
     return false;
 }
-// not including peach
+
+// maybe deleted? too repetitive
 bool StudentWorld::overlapDamageableItems(Actor *me)
 {
     for (Actor* a : m_actors){
-        if (a != me && a->isAlive() && !a->isPeach() && a->isEnemy() && overlap(me, a))
+        if (a != me && a->isAlive() && a->canBeDamaged() && overlap(me, a))
         {
             return true;
         }
@@ -301,7 +307,7 @@ bool StudentWorld::overlapDamageableItems(Actor *me)
     return false;
 }
 
-
+// too repetitive?
 void StudentWorld::damageItemAt(double x, double y)
 {
     for (Actor* a : m_actors)
@@ -324,4 +330,28 @@ void StudentWorld::bonkPeach(Actor *me)
         {
             a->bonk();
         }
+}
+
+bool StudentWorld::isSameLevelWithPeach(Actor* me){
+    if (getPeach()->getY() + 1.5*SPRITE_HEIGHT > me->getY() && getPeach()->getY() - 1.5*SPRITE_HEIGHT < me->getY()){
+        return true;
+    }else{
+        return false;
+    }
+}
+
+int StudentWorld::getDirToPeach(Actor* me){
+    if(getPeach()->getX() > me->getX()){
+        return 0;
+    }else {
+        return 180;
+    }
+}
+
+bool StudentWorld::withinAttackingDis(Actor* me){
+    if (abs(getPeach()->getX() - me->getX()) < 8*SPRITE_WIDTH ){
+        return true;
+    }else{
+        return false;
+    }
 }
