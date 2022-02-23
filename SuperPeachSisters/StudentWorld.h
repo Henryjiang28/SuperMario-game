@@ -43,6 +43,8 @@ public:
   void giveShootPower();
   void setPeachHitPoints(int num);
   void turnOnPeachShootPower();
+  void turnOnPeachJumpPower();
+  void turnOnPeachStarPower();
 
 
 private:

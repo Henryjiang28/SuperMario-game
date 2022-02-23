@@ -36,7 +36,7 @@ class Peach : public Actor{
     public:
         Peach(StudentWorld* world_ptr, double lx, double ly): // ptr to the student world is needed to access functions
             Actor(world_ptr, IID_PEACH, lx, ly, 0, 0),
-            m_hitPoints(1), m_shootPower(true),m_jumpPower(true),m_starPower(false),remaining_jump_distance(0),starPowerTime(0)
+            m_hitPoints(1), m_shootPower(false),m_jumpPower(false),m_starPower(false),remaining_jump_distance(0),starPowerTime(0)
             ,m_tempInvincible(false),tempInvincibleTime(0){}
             // change shoot power to false!!!! , teseting only
 
@@ -51,7 +51,9 @@ class Peach : public Actor{
     bool isTempInvincible(){return m_tempInvincible;}
     bool canShoot(){return m_canShoot;}
     void turnOnShootPower(){m_shootPower = true;};
+    void turnOnJumpPower(){m_jumpPower = true;}
     void setHitPoints(int num){m_hitPoints = num;}
+    void turnOnStarPower(){m_starPower = true; starPowerTime = 150;}
 
     virtual bool isPeach(){return true;}
     virtual bool canBeDamaged(){return true;}
@@ -97,7 +99,6 @@ class Block : public Immobilized{
      bool m_hasMushroom;
      bool m_hasStar;
      bool m_hasFlower;
-    //  bool m_hasGoodie;
      void releaseGoodie();
 };
 
@@ -168,6 +169,11 @@ class Goodie : public interactItems{
     public:
         Goodie(StudentWorld* world_ptr, int imageID, double lx, double ly)
         :interactItems(world_ptr, imageID, lx, ly, 0, 1){}
+
+    virtual void bonk(){return;}
+
+    protected:
+        void GoodieMove();
 };
 
 // ________________________________________________________
@@ -179,9 +185,9 @@ class Flower : public Goodie{
         Flower(StudentWorld* world_ptr, double lx, double ly)
         :Goodie(world_ptr, IID_FLOWER, lx, ly){}
 
-        virtual void doSomething();  // TO DO!!!
+        virtual void doSomething();
 
-    private:
+
 
 };
 
@@ -190,10 +196,9 @@ class Mushroom : public Goodie{
         Mushroom(StudentWorld* world_ptr, double lx, double ly)
         :Goodie(world_ptr, IID_MUSHROOM, lx, ly){}
 
-        virtual void doSomething(){return;}  // TO DO!!!
-        virtual void bonk(){return;}
+    virtual void doSomething();
 
-    private:
+
 
 };
 
@@ -202,10 +207,8 @@ class Star : public Goodie{
         Star(StudentWorld* world_ptr, double lx, double ly)
         :Goodie(world_ptr, IID_STAR, lx, ly){}
 
-        virtual void doSomething(){return;}  // TO DO!!!
-        virtual void bonk(){return;}
+        virtual void doSomething();
 
-    private:
 
 };
 

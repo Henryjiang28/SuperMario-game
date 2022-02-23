@@ -374,3 +374,16 @@ void StudentWorld::turnOnPeachShootPower(){
         getPeach()->turnOnShootPower();
     }
 }
+
+
+void StudentWorld::turnOnPeachJumpPower(){
+    if(getPeach() != nullptr){
+        getPeach()->turnOnJumpPower();
+    }
+}
+
+void StudentWorld::turnOnPeachStarPower(){
+    if(getPeach() != nullptr){
+        getPeach()->turnOnStarPower();
+    }
+}

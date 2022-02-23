@@ -162,16 +162,9 @@ void Piranha_Fireball::doSomething(){
 }
 
 
+
 // goodie implementation:
-void Flower::doSomething(){
-    if(getWorld()->overlapPeach(this)){
-        getWorld()->increaseScore(50);
-        getWorld()->turnOnPeachShootPower();
-        getWorld()->setPeachHitPoints(2);
-        setDie();
-        getWorld()->playSound(SOUND_PLAYER_POWERUP);
-        return;
-    }
+void Goodie::GoodieMove(){
 
     if(!getWorld()->blockingObjectAt(getX(),getY()-2)){
         moveTo(getX(),getY()-2);
@@ -194,8 +187,45 @@ void Flower::doSomething(){
             moveTo(getX()-2, getY());
         }
     }
-
 }
+
+
+void Mushroom::doSomething(){
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->increaseScore(75);
+        getWorld()->turnOnPeachJumpPower();
+        getWorld()->setPeachHitPoints(2);
+        setDie();
+        getWorld()->playSound(SOUND_PLAYER_POWERUP);
+        return;
+    }
+    GoodieMove();
+}
+
+void Flower::doSomething(){
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->increaseScore(50);
+        getWorld()->turnOnPeachShootPower();
+        getWorld()->setPeachHitPoints(2);
+        setDie();
+        getWorld()->playSound(SOUND_PLAYER_POWERUP);
+        return;
+    }
+    GoodieMove();
+}
+
+void Star::doSomething(){
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->increaseScore(100);
+        getWorld()->turnOnPeachStarPower();
+        setDie();
+        getWorld()->playSound(SOUND_PLAYER_POWERUP);
+        return;
+    }
+    GoodieMove();
+}
+
+
 
 
 
