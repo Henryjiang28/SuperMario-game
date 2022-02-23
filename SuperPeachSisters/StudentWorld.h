@@ -40,6 +40,9 @@ public:
   bool isSameLevelWithPeach(Actor* me);
   int getDirToPeach(Actor* me);
   bool withinAttackingDis(Actor* me);
+  void giveShootPower();
+  void setPeachHitPoints(int num);
+  void turnOnPeachShootPower();
 
 
 private:

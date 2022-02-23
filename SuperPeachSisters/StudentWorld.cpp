@@ -341,17 +341,36 @@ bool StudentWorld::isSameLevelWithPeach(Actor* me){
 }
 
 int StudentWorld::getDirToPeach(Actor* me){
-    if(getPeach()->getX() > me->getX()){
-        return 0;
-    }else {
-        return 180;
+    if(getPeach() != nullptr){
+        if(getPeach()->getX() > me->getX()){
+            return 0;
+        }else{
+            return 180;
+        }
     }
+    return 0;
+
 }
 
 bool StudentWorld::withinAttackingDis(Actor* me){
-    if (abs(getPeach()->getX() - me->getX()) < 8*SPRITE_WIDTH ){
-        return true;
-    }else{
-        return false;
+    if(getPeach() != nullptr){
+        if (abs(getPeach()->getX() - me->getX()) < 8*SPRITE_WIDTH ){
+                return true;
+            }else{
+                return false;
+            }
+    }
+    return false;
+}
+
+void StudentWorld::setPeachHitPoints(int num){
+    if(getPeach() != nullptr){
+        getPeach()->setHitPoints(num);
+    }
+}
+
+void StudentWorld::turnOnPeachShootPower(){
+    if(getPeach() != nullptr){
+        getPeach()->turnOnShootPower();
     }
 }

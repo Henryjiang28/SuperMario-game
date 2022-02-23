@@ -17,6 +17,7 @@ void Peach::doSomething(){
             m_starPower = false;
         }
     }
+
     if(isTempInvincible()){
         tempInvincibleTime--;
         if(tempInvincibleTime == 0){
@@ -132,7 +133,6 @@ void Peach::bonk(){
 }
 
 
-
 void Piranha_Fireball::doSomething(){
     if(getWorld()->overlapPeach(this)){
         getWorld()->bonkPeach(this);            // same behavior with getting damaged
@@ -160,6 +160,45 @@ void Piranha_Fireball::doSomething(){
         }
     }
 }
+
+
+// goodie implementation:
+void Flower::doSomething(){
+    if(getWorld()->overlapPeach(this)){
+        getWorld()->increaseScore(50);
+        getWorld()->turnOnPeachShootPower();
+        getWorld()->setPeachHitPoints(2);
+        setDie();
+        getWorld()->playSound(SOUND_PLAYER_POWERUP);
+        return;
+    }
+
+    if(!getWorld()->blockingObjectAt(getX(),getY()-2)){
+        moveTo(getX(),getY()-2);
+    }  // call movedown function maybe
+
+    if(getDirection() == 0){
+        if(getWorld()->blockingObjectAt(getX()+2, getY())){
+            setDirection(180);
+            return;
+        }else{
+            moveTo(getX()+2, getY());
+        }
+    }
+
+    if(getDirection() == 180){
+        if(getWorld()->blockingObjectAt(getX()-2, getY())){
+            setDirection(0);
+            return;
+        }else{
+            moveTo(getX()-2, getY());
+        }
+    }
+
+}
+
+
+
 
 
 void Peach_Fireball::doSomething(){
@@ -233,21 +272,21 @@ void Block::bonk(){
         getWorld()->playSound(SOUND_POWERUP_APPEARS);
         releaseGoodie();
     }
-}
+}  // todo!!!, implement block bonk
 
 
 void Block::releaseGoodie(){
     if(m_hasFlower){
             getWorld()->createFlower(getX(),getY()+8);
-            m_hasGoodie = false;
+            m_hasFlower = false;
         }
         if(m_hasMushroom){
             getWorld()->createMushroom(getX(),getY()+8);
-            m_hasGoodie = false;
+            m_hasMushroom = false;
         }
         if(m_hasStar){
             getWorld()->createStar(getX(),getY()+8);
-            m_hasGoodie = false;
+            m_hasStar = false;
         }
 }
 

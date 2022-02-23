@@ -23,6 +23,7 @@ public:
       virtual void setDie() { alive = false;}
       virtual void getDamaged(){};
       virtual bool isEnemy(){return false;}
+    
 
 private:
     StudentWorld* m_world;
@@ -49,9 +50,11 @@ class Peach : public Actor{
     bool hasShootPower(){return m_shootPower;}
     bool isTempInvincible(){return m_tempInvincible;}
     bool canShoot(){return m_canShoot;}
+    void turnOnShootPower(){m_shootPower = true;};
+    void setHitPoints(int num){m_hitPoints = num;}
+
     virtual bool isPeach(){return true;}
     virtual bool canBeDamaged(){return true;}
-
 
     private:
         int m_hitPoints;
@@ -87,14 +90,14 @@ class Block : public Immobilized{
     virtual void doSomething(){return;};
     virtual bool blockMovement(){return true;}
     virtual void bonk(); // To Do !!!!!
-    bool hasGoodie(){return m_hasGoodie;}
+    bool hasGoodie(){return m_hasFlower || m_hasMushroom || m_hasStar;}
 
 
     private:
      bool m_hasMushroom;
      bool m_hasStar;
      bool m_hasFlower;
-     bool m_hasGoodie;
+    //  bool m_hasGoodie;
      void releaseGoodie();
 };
 
@@ -176,7 +179,7 @@ class Flower : public Goodie{
         Flower(StudentWorld* world_ptr, double lx, double ly)
         :Goodie(world_ptr, IID_FLOWER, lx, ly){}
 
-        virtual void doSomething(){return;}  // TO DO!!!
+        virtual void doSomething();  // TO DO!!!
 
     private:
 
@@ -220,20 +223,20 @@ class dynamicItems : public interactItems{
 };
 
 
-class Piranha_Fireball  : public interactItems{
+class Piranha_Fireball  : public dynamicItems{
     public:
         Piranha_Fireball(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :interactItems(world_ptr, IID_PIRANHA_FIRE, lx, ly, dir, 1){}
+        :dynamicItems(world_ptr, IID_PIRANHA_FIRE, lx, ly, dir){}
     virtual void doSomething();
 
 };
 
 
 
-class Peach_Fireball : public interactItems{
+class Peach_Fireball : public dynamicItems{
     public:
         Peach_Fireball(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :interactItems(world_ptr, IID_PEACH_FIRE, lx, ly, dir, 1){}
+        :dynamicItems(world_ptr, IID_PEACH_FIRE, lx, ly, dir){}
 
     virtual void doSomething();
 
@@ -241,10 +244,10 @@ class Peach_Fireball : public interactItems{
 
 
 
-class Shell : public interactItems{
+class Shell : public dynamicItems{
     public:
         Shell(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :interactItems(world_ptr, IID_SHELL, lx, ly, dir, 1){}
+        :dynamicItems(world_ptr, IID_SHELL, lx, ly, dir){}
     virtual void doSomething();
 
 
