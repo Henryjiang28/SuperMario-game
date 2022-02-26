@@ -16,14 +16,14 @@ public:
     virtual void doSomething() = 0;                     // all actors has doSomething
      bool isAlive(){return alive;}
      virtual bool blockMovement() = 0;
-     virtual bool canBeDamaged(){return false;}
-      virtual void bonk(){return;}
-      virtual bool hasGoodie(){return false;}
-      virtual bool isPeach(){return false;}
-      virtual void setDie() { alive = false;}
-      virtual void getDamaged(){};
-      virtual bool isEnemy(){return false;}
-    
+    //  virtual bool canBeDamaged(){return false;} // not used, delete this
+     virtual void bonk(){return;}
+     virtual bool isPeach(){return false;}
+     virtual void getDamaged(){return;}
+    virtual bool isEnemy(){return false;}
+
+    protected:
+        void setDie() { alive = false;}
 
 private:
     StudentWorld* m_world;
@@ -37,7 +37,7 @@ class Peach : public Actor{
         Peach(StudentWorld* world_ptr, double lx, double ly): // ptr to the student world is needed to access functions
             Actor(world_ptr, IID_PEACH, lx, ly, 0, 0),
             m_hitPoints(1), m_shootPower(false),m_jumpPower(false),m_starPower(false),remaining_jump_distance(0),starPowerTime(0)
-            ,m_tempInvincible(false),tempInvincibleTime(0){}
+            ,tempInvincibleTime(0){}
             // change shoot power to false!!!! , teseting only
 
 
@@ -48,7 +48,7 @@ class Peach : public Actor{
     bool hasStarPower(){return m_starPower;}
     bool hasJumpPower(){return m_jumpPower;}
     bool hasShootPower(){return m_shootPower;}
-    bool isTempInvincible(){return m_tempInvincible;}
+    bool isTempInvincible(){return tempInvincibleTime > 0;}
     bool canShoot(){return m_canShoot;}
     void turnOnShootPower(){m_shootPower = true;};
     void turnOnJumpPower(){m_jumpPower = true;}
@@ -60,7 +60,7 @@ class Peach : public Actor{
 
     private:
         int m_hitPoints;
-        bool m_shootPower, m_jumpPower,m_starPower, m_tempInvincible, m_canShoot;
+        bool m_shootPower, m_jumpPower,m_starPower, m_canShoot;
         int remaining_jump_distance;
         int starPowerTime;
         int tempInvincibleTime;
@@ -109,7 +109,7 @@ class Pipe : public Immobilized{
         {}
 
     virtual void doSomething(){return;}
-    virtual void bonk(){return;}
+    virtual void bonk(){return;} // can be deleted later
     virtual bool blockMovement(){return true;}
 
 };
@@ -120,12 +120,12 @@ class Pipe : public Immobilized{
 
 
 // ______________________________________________________
-//  interactItems class.
+//  InteractItems class.
 //
 
-class interactItems : public Actor{
+class InteractItems : public Actor{
     public:
-        interactItems(StudentWorld* world_ptr, int imageID, double lx, double ly, int dir, int depth) :
+        InteractItems(StudentWorld* world_ptr, int imageID, double lx, double ly, int dir, int depth) :
 		Actor(world_ptr, imageID, lx, ly, dir, depth){};
 
     virtual bool blockMovement(){return false;}
@@ -135,10 +135,10 @@ class interactItems : public Actor{
 
 // ________________________________________________________
 
-class Flag : public interactItems{
+class Flag : public InteractItems{
     public:
         Flag(StudentWorld* world_ptr, double lx, double ly)
-        :interactItems(world_ptr, IID_FLAG, lx, ly, 0, 1){}
+        :InteractItems(world_ptr, IID_FLAG, lx, ly, 0, 1){}
 
         virtual void doSomething();
         virtual void bonk(){return;}
@@ -148,10 +148,10 @@ class Flag : public interactItems{
 };
 
 
-class Mario : public interactItems{
+class Mario : public InteractItems{
     public:
         Mario(StudentWorld* world_ptr, double lx, double ly)
-        :interactItems(world_ptr, IID_MARIO, lx, ly, 0, 1){}
+        :InteractItems(world_ptr, IID_MARIO, lx, ly, 0, 1){}
 
         virtual void doSomething();
         virtual void bonk(){return;}
@@ -163,12 +163,12 @@ class Mario : public interactItems{
 
 
 // ______________________________________________________
-//  Goodie class extends interactItems
+//  Goodie class extends InteractItems
 
-class Goodie : public interactItems{
+class Goodie : public InteractItems{
     public:
         Goodie(StudentWorld* world_ptr, int imageID, double lx, double ly)
-        :interactItems(world_ptr, imageID, lx, ly, 0, 1){}
+        :InteractItems(world_ptr, imageID, lx, ly, 0, 1){}
 
     virtual void bonk(){return;}
 
@@ -214,32 +214,35 @@ class Star : public Goodie{
 
 
 
-// dynamicItems extends interactItems maybe??
-class dynamicItems : public interactItems{
+// dynamicItems extends InteractItems maybe??
+class DynamicItems : public InteractItems{
     public:
-        dynamicItems(StudentWorld* world_ptr, int imageID, double lx, double ly, int dir)
-        :interactItems(world_ptr, imageID, lx, ly, dir, 1){}
+        DynamicItems(StudentWorld* world_ptr, int imageID, double lx, double ly, int dir)
+        :InteractItems(world_ptr, imageID, lx, ly, dir, 1){}
 
     virtual void doSomething(){return;}
     virtual void bonk(){return;}
 
+    protected:
+   void dofireBallThing();
+
 };
 
 
-class Piranha_Fireball  : public dynamicItems{
+class Piranha_Fireball  : public DynamicItems{
     public:
         Piranha_Fireball(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :dynamicItems(world_ptr, IID_PIRANHA_FIRE, lx, ly, dir){}
+        :DynamicItems(world_ptr, IID_PIRANHA_FIRE, lx, ly, dir){}
     virtual void doSomething();
 
 };
 
 
 
-class Peach_Fireball : public dynamicItems{
+class Peach_Fireball : public DynamicItems{
     public:
         Peach_Fireball(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :dynamicItems(world_ptr, IID_PEACH_FIRE, lx, ly, dir){}
+        :DynamicItems(world_ptr, IID_PEACH_FIRE, lx, ly, dir){}
 
     virtual void doSomething();
 
@@ -247,10 +250,10 @@ class Peach_Fireball : public dynamicItems{
 
 
 
-class Shell : public dynamicItems{
+class Shell : public DynamicItems{
     public:
         Shell(StudentWorld* world_ptr, double lx, double ly, int dir)
-        :dynamicItems(world_ptr, IID_SHELL, lx, ly, dir){}
+        :DynamicItems(world_ptr, IID_SHELL, lx, ly, dir){}
     virtual void doSomething();
 
 

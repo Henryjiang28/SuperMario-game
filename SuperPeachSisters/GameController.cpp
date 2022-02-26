@@ -11,6 +11,7 @@
 #include <utility>
 #include <cstdlib>
 #include <algorithm>
+#include <iostream>
 using namespace std;
 
 /*
@@ -55,9 +56,10 @@ int GameController::m_ms_per_tick = kDefaultMsPerTick;
 
 struct SpriteInfo
 {
-	int imageID;
-	int frameNum;
-	std::string	 tgaFileName;
+    int imageID;
+    int frameNum;
+    std::string tgaFileName;
+    std::string imageName;
 };
 
 static void convertToGlutCoords(double x, double y, double& gx, double& gy, double& gz);
@@ -71,24 +73,24 @@ enum GameController::GameControllerState : int {
 void GameController::initDrawersAndSounds()
 {
 	SpriteInfo drawers[] = {
-    { IID_PEACH, 0, "peach1.tga" },
-    { IID_PEACH, 1, "peach2.tga" },
-    { IID_KOOPA, 0, "koopa1.tga" },
-    { IID_KOOPA, 1, "koopa2.tga" },
-    { IID_GOOMBA, 0, "goomba1.tga" },
-    { IID_GOOMBA, 1, "goomba2.tga" },
-    { IID_SHELL, 0, "shell.tga" },
-    { IID_PIRANHA, 0, "piranha1.tga" },
-    { IID_PIRANHA, 1, "piranha2.tga" },
-    { IID_MARIO, 0, "mario.tga" },
-    { IID_BLOCK, 0, "wall.tga" },
-    { IID_PIPE, 0, "pipe.tga" },
-    { IID_STAR, 0, "star.tga" },
-    { IID_FLOWER, 0, "flower.tga" },
-    { IID_MUSHROOM, 0, "mushroom.tga" },
-    { IID_FLAG, 0, "flag.tga" },
-    { IID_PIRANHA_FIRE, 0, "fire.tga" },
-    { IID_PEACH_FIRE, 0, "fireball.tga" },
+    { IID_PEACH, 0, "peach1.tga", "PEACH" },
+    { IID_PEACH, 1, "peach2.tga", "PEACH" },
+    { IID_KOOPA, 0, "koopa1.tga", "KOOPA" },
+    { IID_KOOPA, 1, "koopa2.tga", "KOOPA" },
+    { IID_GOOMBA, 0, "goomba1.tga", "GOOMBA" },
+    { IID_GOOMBA, 1, "goomba2.tga", "GOOMBA" },
+    { IID_SHELL, 0, "shell.tga", "SHELL" },
+    { IID_PIRANHA, 0, "piranha1.tga", "PIRANHA" },
+    { IID_PIRANHA, 1, "piranha2.tga", "PIRANHA" },
+    { IID_MARIO, 0, "mario.tga", "MARIO" },
+    { IID_BLOCK, 0, "wall.tga", "BLOCK" },
+    { IID_PIPE, 0, "pipe.tga", "PIPE" },
+    { IID_STAR, 0, "star.tga", "STAR" },
+    { IID_FLOWER, 0, "flower.tga", "FLOWER" },
+    { IID_MUSHROOM, 0, "mushroom.tga", "MUSHROOM" },
+    { IID_FLAG, 0, "flag.tga", "FLAG" },
+    { IID_PIRANHA_FIRE, 0, "fire.tga", "PIRANHA_FIRE" },
+    { IID_PEACH_FIRE, 0, "fireball.tga", "PEACH_FIRE" },
 	};
 
 	SoundMapType::value_type sounds[] = {
@@ -113,9 +115,10 @@ void GameController::initDrawersAndSounds()
 			path += '/';
 		const SpriteInfo& d = drawers[k];
 		if (!m_spriteManager.loadSprite(path + d.tgaFileName, d.imageID, d.frameNum)) {
-      fprintf(stderr,"Error loading sprite: %s\n",(path+d.tgaFileName).c_str());
+            fprintf(stderr,"Error loading sprite: %s\n",(path+d.tgaFileName).c_str());
 			exit(0);
-    }
+        }
+        m_imageNameMap[d.imageID] = d.imageName;
 	}
 	for (int k = 0; k < sizeof(sounds)/sizeof(sounds[0]); k++)
 		m_soundMap[sounds[k].first] = sounds[k].second;
@@ -147,6 +150,13 @@ void GameController::timerFuncCallback(int)
     glutTimerFunc(MS_PER_FRAME, timerFuncCallback, 0);
 }
 
+#if defined(__APPLE__)
+void windowCloseCallback()
+{
+    SoundFX().abortClip();
+}
+#endif
+
 void GameController::run(int argc, char* argv[], GameWorld* gw, string windowTitle)
 {
 	gw->setController(this);
@@ -171,10 +181,14 @@ void GameController::run(int argc, char* argv[], GameWorld* gw, string windowTit
 	glutReshapeFunc(reshapeCallback);
 	glutDisplayFunc(doSomethingCallback);
 	glutTimerFunc(MS_PER_FRAME, timerFuncCallback, 0);
+#if defined(__APPLE__)
+    glutWMCloseFunc(windowCloseCallback);
+#endif
 
 	glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_GLUTMAINLOOP_RETURNS);
 	glutMainLoop();
 	delete m_gw;
+    reportLeakedGraphObjects();
 }
 
 void GameController::keyboardEvent(unsigned char key, int /* x */, int /* y */)
@@ -358,7 +372,7 @@ void GameController::displayGamePlay()
 #pragma GCC diagnostic pop
 #endif
 
-	for (int i = 4 /* NUM_DEPTHS */ - 1; i >= 0; --i)
+	for (int i = GraphObject::NUM_DEPTHS - 1; i >= 0; --i)
 	{
 		std::set<GraphObject*> &graphObjects = GraphObject::getGraphObjects(i);
 
@@ -384,6 +398,27 @@ void GameController::displayGamePlay()
 	drawScoreAndLives(m_gameStatText);
 
 	glutSwapBuffers();
+}
+
+void GameController::reportLeakedGraphObjects() const
+{
+    int totalLeaked = 0;
+    for (int i = 0; i < GraphObject::NUM_DEPTHS; i++)
+    {
+        set<GraphObject*> &graphObjects = GraphObject::getGraphObjects(i);
+        if (graphObjects.empty())
+            continue;
+        cerr << "***** " << graphObjects.size() << " leaked objects at graphical depth " << i << ":" << endl;
+         
+        for (auto it = graphObjects.begin(); it != graphObjects.end(); it++)
+        {
+            GraphObject* cur = *it;
+            cerr << m_imageNameMap.at(cur->m_imageID) << " at (" << cur->getX() << "," << cur->getY() << ")" << endl;
+            totalLeaked++;
+        }
+    }
+    if (totalLeaked > 0)
+        cout << "***** Total leaked objects: " << totalLeaked << endl;
 }
 
 void GameController::reshape (int w, int h)

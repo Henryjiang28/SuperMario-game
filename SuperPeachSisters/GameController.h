@@ -67,7 +67,9 @@ private:
 	int			m_curIntraFrameTick;
 	using SoundMapType = std::map<int, std::string>;
 	using DrawMapType  = std::map<int, std::string>;
+    using ImageNameMapType = std::map<int, std::string>;
 	SoundMapType m_soundMap;
+    ImageNameMapType m_imageNameMap;
 	bool		m_playerWon;
 	SpriteManager m_spriteManager;
 
@@ -75,6 +77,7 @@ private:
 
 	void initDrawersAndSounds();
 	void displayGamePlay();
+    void reportLeakedGraphObjects() const;
 
 	static const int kDefaultMsPerTick = 10;
 	static int m_ms_per_tick;

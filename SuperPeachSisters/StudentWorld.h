@@ -20,7 +20,6 @@ public:
   ~StudentWorld();
   bool blockingObjectAt(double x, double y);
   void bonkObjectAt(double x, double y);
-  bool overlap(Actor* a, Actor* b);
   bool noBlockingObjectAt(double x, double y);
 
   void createFlower(double x, double y);
@@ -35,7 +34,6 @@ public:
   void bonkPeach(Actor* me);
   bool overlapDamageableItems(Actor* me);  // not including peach
   void damageItemAt(double x, double y);
-  Peach* getPeach(){return m_peach;}
   bool damageOverlapEnemy(Actor* me);
   bool isSameLevelWithPeach(Actor* me);
   int getDirToPeach(Actor* me);
@@ -45,14 +43,17 @@ public:
   void turnOnPeachShootPower();
   void turnOnPeachJumpPower();
   void turnOnPeachStarPower();
+  bool PeachHasStarPower();
 
 
 private:
   Peach* m_peach;
+  Peach* getPeach(){return m_peach;}
   std::vector<Actor*> m_actors;
 
   bool m_finishCurLevel;
   bool m_savedMario;
+  bool overlap(Actor* a, Actor* b);
 
 };
 

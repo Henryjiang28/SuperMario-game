@@ -1,0 +1,94 @@
+
+The class hierarchy is: 
+
+GraphObject
+	Actor
+
+        Peach
+
+        Immobilized
+                    Pipe
+                    Block
+
+        InteractItems
+                    Flag
+                    Mario
+
+            Goodie
+                    Flower
+                    Star
+                    Mushroom
+
+            DynamicItems
+
+                    Piranha_Fireball
+                    Peach_Fireball
+                    Shell
+        Enemy
+                    Goomba
+                    Koopa
+                    Piranha
+
+1.
+Actor public member functions:
+
+StudentWorld* getWorld(){return m_world;}
+    This is to give every actors a pointer to the world.
+
+virtual void doSomething() = 0;
+   This is a pure virtual because no Actor should be able to be instantiated; it is enforced to implement doSomthing in all actors since a generic actor
+   don't have to do something.
+
+virtual bool blockMovement() = 0;
+    The blockMovement property is not a generic property and can differs from actors to actors, so each actor should implement this function to indicate whether or not the object 
+    will blockMovement.
+
+virtual void bonk(){return;}
+    All actors should have bonk method but not all actors will do things when bonked. In fact, many of them will just do nothing. So making it non-virtual
+    and return will make its child classes look more concise. Actors that will do things when bonked can override this function.
+
+virtual bool isPeach(){return false;}
+    All actors should return false execpt for peach itself, this is easiler for studentWorld to quickly identify the if object is peach or not when looping through the vector.
+    This is because many things happening in the game is related to peach so this non-pure virtual function is needed.
+    Not pure virtual because only peach will return true while other actors will return false in default.
+
+virtual void getDamaged(){return;}
+    Not all actors can be damaged so it will just return instantly. For enemies and peach whom can be damaged can override this function. so it will not 
+    be set to pure virtual function
+
+virtual bool isEnemy(){return false;}
+    only enemies like goomba, koopa and piranha will override this and return true; default is set to be false. so no need to be pure virtual.
+
+
+
+Protected function
+
+void setDie() { alive = false;}
+    This is an universal function and does not need to be overrided by its child classes so it's not virtual.
+    Only child classes can use setDie so it's declared as Protected and can't be called by other classes.
+
+
+
+
+2.
+Peach public functions:
+ virtual void doSomething();
+    virtual void getDamaged(){ bonk(); }   // same with getting bonked.
+    virtual bool blockMovement(){return false;}
+    virtual void bonk();
+
+//Getters
+    bool hasStarPower(){return m_starPower;}
+    bool hasJumpPower(){return m_jumpPower;}
+    bool hasShootPower(){return m_shootPower;}
+    bool isTempInvincible(){return tempInvincibleTime > 0;}
+    bool canShoot(){return m_canShoot;}
+    virtual bool isPeach(){return true;}
+
+//Mutators, mainly called by studentWorld to change peach's properties.
+    void turnOnShootPower(){m_shootPower = true;};
+    void turnOnJumpPower(){m_jumpPower = true;}
+    void setHitPoints(int num){m_hitPoints = num;}
+    void turnOnStarPower(){m_starPower = true; starPowerTime = 150;}
+
+
