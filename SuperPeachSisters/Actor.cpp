@@ -95,7 +95,7 @@ void Peach::doSomething(){
                         if(getDirection() == 0){
                             getWorld()->createPeachFireBall(getX()+4, getY(), 0);
                             time_to_recharge_before_next_fire = 8;
-                        }else if(getDirection() == 180){
+                        }if(getDirection() == 180){
                             getWorld()->createPeachFireBall(getX()-4, getY(), 180);
                             time_to_recharge_before_next_fire = 8;
                         }
