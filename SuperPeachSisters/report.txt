@@ -32,63 +32,126 @@ GraphObject
 1.
 Actor public member functions:
 
-StudentWorld* getWorld(){return m_world;}
-    This is to give every actors a pointer to the world.
+    StudentWorld* getWorld(){return m_world;}
+        This is to give every actors a pointer to the world.
 
-virtual void doSomething() = 0;
-   This is a pure virtual because no Actor should be able to be instantiated; it is enforced to implement doSomthing in all actors since a generic actor
-   don't have to do something.
+    virtual void doSomething() = 0;
+    This is a pure virtual because no Actor should be able to be instantiated; it is enforced to implement doSomthing in all actors since a generic actor
+    don't have to do something.
 
-virtual bool blockMovement() = 0;
-    The blockMovement property is not a generic property and can differs from actors to actors, so each actor should implement this function to indicate whether or not the object 
-    will blockMovement.
+    virtual bool blockMovement() = 0;
+        The blockMovement property is not a generic property and can differs from actors to actors, so each actor should implement this function to indicate whether or not the object 
+        will blockMovement.
 
-virtual void bonk(){return;}
-    All actors should have bonk method but not all actors will do things when bonked. In fact, many of them will just do nothing. So making it non-virtual
-    and return will make its child classes look more concise. Actors that will do things when bonked can override this function.
+    virtual void bonk(){return;}
+        All actors should have bonk method but not all actors will do things when bonked. In fact, many of them will just do nothing. So making it non-virtual
+        and return will make its child classes look more concise. Actors that will do things when bonked can override this function.
 
-virtual bool isPeach(){return false;}
-    All actors should return false execpt for peach itself, this is easiler for studentWorld to quickly identify the if object is peach or not when looping through the vector.
-    This is because many things happening in the game is related to peach so this non-pure virtual function is needed.
-    Not pure virtual because only peach will return true while other actors will return false in default.
+    virtual bool isPeach(){return false;}
+        All actors should return false execpt for peach itself, this is easiler for studentWorld to quickly identify the if object is peach or not when looping through the vector.
+        This is because many things happening in the game is related to peach so this non-pure virtual function is needed.
+        Not pure virtual because only peach will return true while other actors will return false in default.
 
-virtual void getDamaged(){return;}
-    Not all actors can be damaged so it will just return instantly. For enemies and peach whom can be damaged can override this function. so it will not 
-    be set to pure virtual function
+    virtual void getDamaged(){return;}
+        Not all actors can be damaged so it will just return instantly. For enemies and peach whom can be damaged can override this function. so it will not 
+        be set to pure virtual function.
 
-virtual bool isEnemy(){return false;}
-    only enemies like goomba, koopa and piranha will override this and return true; default is set to be false. so no need to be pure virtual.
-
-
-
-Protected function
-
-void setDie() { alive = false;}
-    This is an universal function and does not need to be overrided by its child classes so it's not virtual.
-    Only child classes can use setDie so it's declared as Protected and can't be called by other classes.
+    virtual bool isEnemy(){return false;}
+        only enemies like goomba, koopa and piranha will override this and return true; default is set to be false. so no need to be pure virtual.
+        This function serves to help distinguish peach from the enemies since those are the only two types of object that can be damaged under certain circumstances.
 
 
 
 
-2.
+    Protected function
+
+    void setDie() { alive = false;}
+        This is an universal function and does not need to be overrided by its child classes so it's not virtual.
+        Only child classes can use setDie so it's declared as Protected and can't be called by other classes.
+
+
+
+
 Peach public functions:
- virtual void doSomething();
-    virtual void getDamaged(){ bonk(); }   // same with getting bonked.
+    virtual void doSomething();
+        virtual void getDamaged(){ bonk(); }   // same with getting bonked.
+        virtual bool blockMovement(){return false;}         // peach will not blockMovement
+        virtual void bonk();
+
+    //Getters
+        bool hasStarPower(){return m_starPower;}
+        bool hasJumpPower(){return m_jumpPower;}
+        bool hasShootPower(){return m_shootPower;}
+        bool isTempInvincible(){return tempInvincibleTime > 0;}
+        bool canShoot(){return m_canShoot;}
+        virtual bool isPeach(){return true;}
+
+    //Mutators, mainly called by studentWorld to change peach's status during gameplay.
+        void turnOnShootPower(){m_shootPower = true;};
+        void turnOnJumpPower(){m_jumpPower = true;}
+        void setHitPoints(int num){m_hitPoints = num;}
+        void turnOnStarPower(){m_starPower = true; starPowerTime = 150;}
+
+
+Immobilized is an abstract class inherited from Actor for blocks and pipes that essentially share some common properties:
+    blockMovement returns true.
+    doSomething will just return for both block and pipe,
+    all has default graphical depth of 2
+
+    Block is an Immobilized actor:
+        if bonked, it releases goodies if it has one, and will do nothing afterwards
+
+    private functions: These two functions are made prviate because it will only be called in blocks member functions.
+        void releaseGoodie();   // will create a goodie when bonked.
+        bool hasGoodie()        // return true if a member has a goodie inside.
+
+    Pipe is an Immobilized actor:
+        Its behaviors are already defined in Immobilized base class.
+
+
+
+InteractItems is an abstract base class inherited from Actor for all actors that can be interacted with
+    all InteractItems will not block movement and just return immediately when bonked
     virtual bool blockMovement(){return false;}
-    virtual void bonk();
+    virtual void bonk(){return;}
 
-//Getters
-    bool hasStarPower(){return m_starPower;}
-    bool hasJumpPower(){return m_jumpPower;}
-    bool hasShootPower(){return m_shootPower;}
-    bool isTempInvincible(){return tempInvincibleTime > 0;}
-    bool canShoot(){return m_canShoot;}
-    virtual bool isPeach(){return true;}
+    Flag:
+        doSomething will take peach to next level if detected overlap with peach.
+    Mario
+        doSomething will take indicate peach has won if detected overlap with peach.
 
-//Mutators, mainly called by studentWorld to change peach's properties.
-    void turnOnShootPower(){m_shootPower = true;};
-    void turnOnJumpPower(){m_jumpPower = true;}
-    void setHitPoints(int num){m_hitPoints = num;}
-    void turnOnStarPower(){m_starPower = true; starPowerTime = 150;}
+
+    Goodie is an abstract class based on InteractItems:
+       Protected void GoodieMove() function:
+        This function will only be called in its child class so it's made protected
+        Since all goodie move the same way when released, so they can call this in each of their doSomething() member function.
+
+        All goodies have direction of 0 and graphical depth of 1;
+
+        Flower, Mushroom and Star each has their virtual doSomething member function implemented and do each their own things according to the spec.
+
+
+    DynamicItems is an abstract class based on InteractItems
+        Protected void doFireBallThing() function:
+            This will be only be called by its child(shell, Peach_Fireball, Piranha_Fireball)
+            All these item move the same way and well be dead after encounting blocking objects.
+        virtual void doSomething():
+            This can apply to both peach fireball and shell because they all deal damage to the enemies and all have 
+            a same moving pattern. Thus, Peach_Fireball and Shell will not have to override doSomething() function
+
+        Piranha_Fireball class will implement its own doSomething since it only damages peach but will also call doFireBallThing().
+
+
+Enemy is an abstract base class inherited from Actor
+ Since koopa and goomba all patrol back and forth if there is no objects or gaps blocking their way, so I made this function 
+        so that they can call it in each of their doSomething();
+
+
+
+
+
+
+
+
 
 
