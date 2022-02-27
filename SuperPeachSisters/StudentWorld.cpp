@@ -165,7 +165,7 @@ int StudentWorld::move()
         {
             delete *it;            // remove object
             m_actors.erase(it);    // erase that slot and reallocate pointer
-            it = m_actors.begin(); // put it back to the beginning
+            it = m_actors.begin(); // redefine iterator after erasing.
         }
     }
     // Lives: 2 Level: 5 Points: 500 StarPower! JumpPower!
@@ -294,34 +294,6 @@ bool StudentWorld::damageOverlapEnemy(Actor* me){
     }
     return false;
 }
-
-// // maybe deleted? too repetitive
-// bool StudentWorld::overlapDamageableItems(Actor *me)
-// {
-//     for (Actor* a : m_actors){
-//         if (a != me && a->isAlive() && a->canBeDamaged() && overlap(me, a))
-//         {
-//             return true;
-//         }
-//     }
-//     return false;
-// }
-
-// // too repetitive?
-// void StudentWorld::damageItemAt(double x, double y)
-// {
-//     for (Actor* a : m_actors)
-//     {
-//         if (x - SPRITE_WIDTH < a->getX() && x + SPRITE_WIDTH > a->getX()  )
-//         {
-//             if (y + SPRITE_HEIGHT > a->getY() && y - SPRITE_HEIGHT < a->getY()  )
-//             {
-//                     a->getDamaged();
-//             }
-//         }
-//     }
-//     return;
-// }
 
 void StudentWorld::bonkPeach(Actor *me)
 { // already detected overlap

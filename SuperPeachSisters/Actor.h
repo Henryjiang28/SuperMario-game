@@ -16,7 +16,6 @@ public:
     virtual void doSomething() = 0;                     // all actors has doSomething
      bool isAlive(){return alive;}
      virtual bool blockMovement() = 0;
-    //  virtual bool canBeDamaged(){return false;} // not used, delete this
      virtual void bonk(){return;}
      virtual bool isPeach(){return false;}
      virtual void getDamaged(){return;}
@@ -38,7 +37,7 @@ class Peach : public Actor{
             Actor(world_ptr, IID_PEACH, lx, ly, 0, 0),
             m_hitPoints(1), m_shootPower(false),m_jumpPower(false),m_starPower(false),remaining_jump_distance(0),starPowerTime(0)
             ,tempInvincibleTime(0){}
-            // change shoot power to false!!!! , teseting only
+
 
 
     virtual void doSomething();
@@ -56,7 +55,7 @@ class Peach : public Actor{
     void turnOnStarPower(){m_starPower = true; starPowerTime = 150;}
 
     virtual bool isPeach(){return true;}
-    virtual bool canBeDamaged(){return true;}
+
 
     private:
         int m_hitPoints;
@@ -76,10 +75,7 @@ class Immobilized : public Actor{
      Actor(world_ptr, imageID, lx, ly, 0, 2){}
 
      virtual bool blockMovement(){return true;}
-     virtual bool canBeDamaged(){return false;}
-
-     private:
-
+     virtual void doSomething(){return;}
 
 };
 
@@ -89,10 +85,7 @@ class Block : public Immobilized{
         :Immobilized(world_ptr, IID_BLOCK, lx, ly), m_hasMushroom(Mushroom),m_hasStar(Star),m_hasFlower(Flower)
         {}
 
-    virtual void doSomething(){return;};
-    virtual bool blockMovement(){return true;}
-    virtual void bonk(); // To Do !!!!!
-    bool hasGoodie(){return m_hasFlower || m_hasMushroom || m_hasStar;}
+    virtual void bonk();
 
 
     private:
@@ -100,17 +93,13 @@ class Block : public Immobilized{
      bool m_hasStar;
      bool m_hasFlower;
      void releaseGoodie();
+     bool hasGoodie(){return m_hasFlower || m_hasMushroom || m_hasStar;}
 };
 
 class Pipe : public Immobilized{
     public:
         Pipe(StudentWorld* world_ptr, double lx, double ly)
-        :Immobilized(world_ptr, IID_PIPE, lx, ly)
-        {}
-
-    virtual void doSomething(){return;}
-    virtual void bonk(){return;} // can be deleted later
-    virtual bool blockMovement(){return true;}
+        :Immobilized(world_ptr, IID_PIPE, lx, ly){}
 
 };
 
@@ -125,11 +114,11 @@ class Pipe : public Immobilized{
 
 class InteractItems : public Actor{
     public:
-        InteractItems(StudentWorld* world_ptr, int imageID, double lx, double ly, int dir, int depth) :
+        InteractItems(StudentWorld* world_ptr, int imageID, double lx, double ly, int dir, int depth):
 		Actor(world_ptr, imageID, lx, ly, dir, depth){};
 
     virtual bool blockMovement(){return false;}
-    virtual bool canBeDamaged(){return false;}
+    virtual void bonk(){return;}
 
 };
 
@@ -141,12 +130,10 @@ class Flag : public InteractItems{
         :InteractItems(world_ptr, IID_FLAG, lx, ly, 0, 1){}
 
         virtual void doSomething();
-        virtual void bonk(){return;}
 
-    private:
+
 
 };
-
 
 class Mario : public InteractItems{
     public:
@@ -154,9 +141,6 @@ class Mario : public InteractItems{
         :InteractItems(world_ptr, IID_MARIO, lx, ly, 0, 1){}
 
         virtual void doSomething();
-        virtual void bonk(){return;}
-
-    private:
 
 };
 
@@ -169,8 +153,6 @@ class Goodie : public InteractItems{
     public:
         Goodie(StudentWorld* world_ptr, int imageID, double lx, double ly)
         :InteractItems(world_ptr, imageID, lx, ly, 0, 1){}
-
-    virtual void bonk(){return;}
 
     protected:
         void GoodieMove();
@@ -187,8 +169,6 @@ class Flower : public Goodie{
 
         virtual void doSomething();
 
-
-
 };
 
 class Mushroom : public Goodie{
@@ -197,7 +177,6 @@ class Mushroom : public Goodie{
         :Goodie(world_ptr, IID_MUSHROOM, lx, ly){}
 
     virtual void doSomething();
-
 
 
 };
@@ -209,22 +188,20 @@ class Star : public Goodie{
 
         virtual void doSomething();
 
-
 };
 
 
 
-// dynamicItems extends InteractItems maybe??
+
 class DynamicItems : public InteractItems{
     public:
         DynamicItems(StudentWorld* world_ptr, int imageID, double lx, double ly, int dir)
         :InteractItems(world_ptr, imageID, lx, ly, dir, 1){}
 
-    virtual void doSomething(){return;}
-    virtual void bonk(){return;}
+    virtual void doSomething();
 
     protected:
-   void dofireBallThing();
+        void dofireBallThing();
 
 };
 
@@ -243,9 +220,6 @@ class Peach_Fireball : public DynamicItems{
     public:
         Peach_Fireball(StudentWorld* world_ptr, double lx, double ly, int dir)
         :DynamicItems(world_ptr, IID_PEACH_FIRE, lx, ly, dir){}
-
-    virtual void doSomething();
-
 };
 
 
@@ -254,8 +228,6 @@ class Shell : public DynamicItems{
     public:
         Shell(StudentWorld* world_ptr, double lx, double ly, int dir)
         :DynamicItems(world_ptr, IID_SHELL, lx, ly, dir){}
-    virtual void doSomething();
-
 
 };
 
@@ -267,7 +239,7 @@ class Enemy : public Actor{
         Enemy(StudentWorld* world_ptr, int imageId, double lx, double ly, int dir)
         :Actor(world_ptr, imageId, lx, ly, dir, 0){}
 
-    virtual bool canBeDamaged(){return true;}
+
     virtual bool blockMovement(){return false;}
     virtual void getDamaged();      // shared betweem goomba and piranha
     virtual bool isEnemy(){return true;}

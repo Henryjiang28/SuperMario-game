@@ -20,17 +20,13 @@ void Peach::doSomething(){
 
     if(isTempInvincible()){
         tempInvincibleTime--;
-        // if(tempInvincibleTime == 0){
-        //     m_tempInvincible = false;
-        // }
+ 
     }
 
         if(time_to_recharge_before_next_fire > 0){
             time_to_recharge_before_next_fire--;
         }
-        // if(time_to_recharge_before_next_fire <= 0){
-        //     m_canShoot = true;
-        // }
+
 
     if(getWorld()->noBlockingObjectAt(getX(),getY())){
         getWorld()->bonkObjectAt(getX(),getY());
@@ -153,7 +149,7 @@ void DynamicItems::dofireBallThing(){
     }
 }
 
-void Peach_Fireball::doSomething(){
+void DynamicItems::doSomething(){
 
     if(getWorld()->damageOverlapEnemy(this)){   // good now, don't change
         setDie();
@@ -163,7 +159,6 @@ void Peach_Fireball::doSomething(){
 
 }
 
-
 void Piranha_Fireball::doSomething(){
     if(getWorld()->overlapPeach(this)){
         getWorld()->bonkPeach(this);            // same behavior with getting damaged
@@ -172,6 +167,15 @@ void Piranha_Fireball::doSomething(){
     }
     dofireBallThing();
 }
+
+// void Shell::doSomething(){
+//     if(getWorld()->damageOverlapEnemy(this)){
+//         setDie();
+//         return;
+//     }
+//     dofireBallThing();
+
+// }
 
 
 
@@ -240,35 +244,7 @@ void Star::doSomething(){
 
 
 
-void Shell::doSomething(){
-    if(getWorld()->damageOverlapEnemy(this)){   // good now, don't change!
-        setDie();
-        return;
-    }
 
-    if(!getWorld()->blockingObjectAt(getX(),getY()-2)){
-        moveTo(getX(),getY()-2);
-    }
-
-    if(getDirection() == 0){
-        if(getWorld()->blockingObjectAt(getX()+2, getY())){
-            setDie();
-            return;
-        }else{
-            moveTo(getX()+2, getY());
-        }
-    }
-
-    if(getDirection() == 180){
-        if(getWorld()->blockingObjectAt(getX()-2, getY())){
-            setDie();
-            return;
-        }else{
-            moveTo(getX()-2, getY());
-        }
-    }
-
-} // end of do something
 
 
 
