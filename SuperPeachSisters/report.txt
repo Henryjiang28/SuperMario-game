@@ -1,5 +1,5 @@
 
-The class hierarchy is: 
+The class hierarchy is:
 
 GraphObject
 	Actor
@@ -131,7 +131,7 @@ InteractItems is an abstract base class inherited from Actor for all actors that
         Flower, Mushroom and Star each has their virtual doSomething member function implemented and do each their own things according to the spec.
 
 
-    DynamicItems is an abstract class based on InteractItems
+    DynamicItems is an abstract class inherited from InteractItems
         Protected void doFireBallThing() function:
             This will be only be called by its child(shell, Peach_Fireball, Piranha_Fireball)
             All these item move the same way and well be dead after encounting blocking objects.
@@ -143,8 +143,36 @@ InteractItems is an abstract base class inherited from Actor for all actors that
 
 
 Enemy is an abstract base class inherited from Actor
- Since koopa and goomba all patrol back and forth if there is no objects or gaps blocking their way, so I made this function 
-        so that they can call it in each of their doSomething();
+
+    virtual bool blockMovement(){return false;}   // all enemies will not blockMovement(override function)
+    virtual void getDamaged();      // shared betweem goomba and piranha, both will die and increases score by 100
+    virtual bool isEnemy(){return true;} // will be used to determine if peach_fireball overlap with enemies.
+    virtual void doSomething();  // will be shared between goomba and koopa,  since koopa and goomba all patrol back and forth if there is no objects or gaps blocking their way
+    virtual void bonk();        // shared between goomba and Piranha.
+
+    koopa is inherited from Enemy class:
+        virtual void bonk();   // override enemy bonk               // creates shell after getting bonked
+        virtual void getDamaged(); // override enemy getDamaged()   // creates shell after death
+
+
+    goomba is inherited from Enemy class
+        will inherite all its superclass memeber functions.
+
+    Piranha is inherited from Enemy class:
+        virtual void doSomething();  // (override)will shoots fireball when seeing peach
+
+
+
+
+
+
+2. All functionalities are implemented as required in the spec.
+
+3. It's not clear how shell should behave when it comes to a one block gap between the platforms. (something like ______  ______ )
+Although my shell often has the same behavior with the demo's shell, but sometimes, very rarely, not be able to go through the gap.
+According to the spec, the shell should behave just like a fireball and will not be able to go through the gap because the shell would fall and hit the edge. So I decided to
+make it use the doFireBallThing() member function.
+
 
 
 

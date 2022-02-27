@@ -20,7 +20,6 @@ void Peach::doSomething(){
 
     if(isTempInvincible()){
         tempInvincibleTime--;
- 
     }
 
         if(time_to_recharge_before_next_fire > 0){
@@ -97,9 +96,10 @@ void Peach::doSomething(){
                         }
                     }
                 }
+            break;
 
             default:
-                break;
+            break;
             }
     }
     return;
@@ -168,17 +168,6 @@ void Piranha_Fireball::doSomething(){
     dofireBallThing();
 }
 
-// void Shell::doSomething(){
-//     if(getWorld()->damageOverlapEnemy(this)){
-//         setDie();
-//         return;
-//     }
-//     dofireBallThing();
-
-// }
-
-
-
 // goodie implementation:
 void Goodie::GoodieMove(){
 
@@ -240,12 +229,6 @@ void Star::doSomething(){
     }
     GoodieMove();
 }
-
-
-
-
-
-
 
 
 
@@ -404,11 +387,6 @@ void Enemy::getDamaged(){
     getWorld()->increaseScore(100);
     setDie();
 }
-
-// void Piranha::getDamaged(){
-//     getWorld()->increaseScore(100);
-//     setDie();
-// }
 
 
 void Koopa::getDamaged(){

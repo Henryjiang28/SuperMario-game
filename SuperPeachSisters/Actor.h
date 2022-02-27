@@ -266,19 +266,11 @@ class Piranha : public Enemy{
         Piranha(StudentWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_PIRANHA, lx, ly, dir), m_fireDelay(0){}
     virtual void doSomething();  // shoots fireball
-    // virtual void bonk();
-    // virtual void getDamaged();  // maybe combined with goomba
 
     private:
         int m_fireDelay;
-
 };
 
 
-
-
-
-
-// Students:  Add code to this file, Actor.cpp, StudentWorld.h, and StudentWorld.cpp
 
 #endif // ACTOR_H_

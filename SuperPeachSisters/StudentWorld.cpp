@@ -188,8 +188,6 @@ int StudentWorld::move()
         oss << "JumpPower! ";
     if (m_peach->hasShootPower())
         oss << "ShootPower! ";
-    if (m_peach->isTempInvincible())
-        oss << "Invincible! ";
 
     setGameStatText(oss.str());
 
