@@ -32,13 +32,10 @@ public:
   void setSavedMario(){m_savedMario = true;}
   bool overlapPeach(Actor* me);
   void bonkPeach(Actor* me);
-  bool overlapDamageableItems(Actor* me);  // not including peach
-  void damageItemAt(double x, double y);
   bool damageOverlapEnemy(Actor* me);
   bool isSameLevelWithPeach(Actor* me);
   int getDirToPeach(Actor* me);
   bool withinAttackingDis(Actor* me);
-  void giveShootPower();
   void setPeachHitPoints(int num);
   void turnOnPeachShootPower();
   void turnOnPeachJumpPower();

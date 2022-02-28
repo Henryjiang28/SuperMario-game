@@ -169,9 +169,9 @@ Enemy is an abstract base class inherited from Actor
 2. All functionalities are implemented as required in the spec.
 
 3. It's not clear how shell should behave when it comes to a one block gap between the platforms. (something like ______  ______ )
-Although my shell often has the same behavior with the demo's shell, but sometimes, very rarely, not be able to go through the gap.
-According to the spec, the shell should behave just like a fireball and will not be able to go through the gap because the shell would fall and hit the edge. So I decided to
-make it use the doFireBallThing() member function.
+Although my shell often has the same behavior with the demo's shell, but sometimes not be able to go through the gap.
+According to the spec, the shell should behave just like a fireball and will not be able to go through the gap because the shell would fall off and hit the block edge. So I decided to
+make it just  use the doFireBallThing() member function.
 
 
 

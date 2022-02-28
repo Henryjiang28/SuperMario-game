@@ -259,19 +259,6 @@ void StudentWorld::bonkObjectAt(double x, double y)
     return;
 }
 
-bool StudentWorld::noBlockingObjectAt(double x, double y)
-{
-    for (Actor *actor : m_actors)
-    {
-        if (actor->isAlive() && !actor->blockMovement())
-        {
-            if (x < actor->getX() + (SPRITE_WIDTH) && x > actor->getX() - (SPRITE_WIDTH))
-                if ((y > actor->getY() - (SPRITE_HEIGHT) && y < actor->getY() + (SPRITE_HEIGHT)))
-                    return true;
-        }
-    }
-    return false;
-}
 
 bool StudentWorld::overlapPeach(Actor *me)
 {
@@ -294,7 +281,7 @@ bool StudentWorld::damageOverlapEnemy(Actor* me){
 }
 
 void StudentWorld::bonkPeach(Actor *me)
-{ // already detected overlap
+{
     for (Actor *a : m_actors)
         if (a != me && a->isAlive() && a->isPeach())
         {

@@ -22,12 +22,12 @@ void Peach::doSomething(){
         tempInvincibleTime--;
     }
 
-        if(time_to_recharge_before_next_fire > 0){
-            time_to_recharge_before_next_fire--;
-        }
+    if(time_to_recharge_before_next_fire > 0){
+        time_to_recharge_before_next_fire--;
+    }
 
 
-    if(getWorld()->noBlockingObjectAt(getX(),getY())){
+    if(!getWorld()->blockingObjectAt(getX(),getY())){
         getWorld()->bonkObjectAt(getX(),getY());
     }
 
@@ -48,7 +48,6 @@ void Peach::doSomething(){
                 moveTo(getX(), getY()-4);
             }
         }
-
 
 
     int ch;
@@ -161,7 +160,7 @@ void DynamicItems::doSomething(){
 
 void Piranha_Fireball::doSomething(){
     if(getWorld()->overlapPeach(this)){
-        getWorld()->bonkPeach(this);            // same behavior with getting damaged
+        getWorld()->bonkPeach(this);
         setDie();
         return;
     }
