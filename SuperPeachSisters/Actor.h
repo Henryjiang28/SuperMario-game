@@ -263,7 +263,7 @@ class Koopa : public Enemy{
 
 class Piranha : public Enemy{
     public:
-        Piranha(StudentWorld* world_ptr, double lx, double ly, int dir)
+        Piranha(StudetWorld* world_ptr, double lx, double ly, int dir)
         :Enemy(world_ptr, IID_PIRANHA, lx, ly, dir), m_fireDelay(0){}
     virtual void doSomething();  // shoots fireball
 
